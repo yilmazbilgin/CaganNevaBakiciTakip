@@ -407,7 +407,6 @@ val isPaid = paidDays[monthKey]?.contains(day) == true
     )
     }
                                     )
-                                }
                         }
                     }
                 }
