@@ -599,3 +599,46 @@ fun saveDays(
         apply()
     }
 }
+fun loadPaidDays(context: Context): Map<String, Set<Int>> {
+    val preferences = context.getSharedPreferences(
+        "bakici_takip_paid",
+        Context.MODE_PRIVATE
+    )
+
+    val result = mutableMapOf<String, Set<Int>>()
+
+    preferences.all.forEach { (month, value) ->
+        val text = value as? String ?: return@forEach
+
+        val days = text
+            .split(",")
+            .filter { it.isNotBlank() }
+            .mapNotNull { it.toIntOrNull() }
+            .toSet()
+
+        result[month] = days
+    }
+
+    return result
+}
+
+fun savePaidDays(
+    context: Context,
+    data: Map<String, Set<Int>>
+) {
+    val preferences = context.getSharedPreferences(
+        "bakici_takip_paid",
+        Context.MODE_PRIVATE
+    )
+
+    preferences.edit().clear().apply {
+        data.forEach { (month, days) ->
+            putString(
+                month,
+                days.sorted().joinToString(",")
+            )
+        }
+
+        apply()
+    }
+}
