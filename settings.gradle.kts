@@ -1,5 +1,5 @@
-import org.gradle.api.initialization.resolve
-.RepositoriesMode
+import org.gradle.api.initialization.resolve.RepositoriesMode
+
 pluginManagement {
     repositories {
         google()
