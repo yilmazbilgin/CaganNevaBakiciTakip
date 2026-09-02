@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -135,6 +136,7 @@ val remainingFee = totalFee - paidFee
         modifier = Modifier
     .fillMaxSize()
 .statusBarsPadding()
+.navigationBarsPadding()
 .background(Color(0xFFFFF8F5))
     .padding(horizontal = 16.dp)
     .padding(top = 12.dp, bottom = 12.dp)
