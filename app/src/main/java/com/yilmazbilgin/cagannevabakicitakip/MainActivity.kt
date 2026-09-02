@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -132,10 +133,11 @@ val remainingFee = totalFee - paidFee
 
     Column(
         modifier = Modifier
-            .fillMaxSize()
-            .background(Color(0xFFFFF8F5))
-            .padding(horizontal = 16.dp)
-            .padding(top = 18.dp, bottom = 12.dp)
+    .fillMaxSize()
+    .systemBarsPadding()
+    .background(Color(0xFFFFF8F5))
+    .padding(horizontal = 16.dp)
+    .padding(top = 12.dp, bottom = 12.dp)
     ) {
 
         // ÜST BAŞLIK
@@ -149,7 +151,7 @@ val remainingFee = totalFee - paidFee
             ) {
                 Text(
                     text = "🧸 Çağan & Neva",
-                    fontSize = 23.sp,
+                    fontSize = 21.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color(0xFF55415A)
                 )
@@ -165,7 +167,7 @@ val remainingFee = totalFee - paidFee
 
             Box(
                 modifier = Modifier
-                    .size(52.dp)
+                    .size(46.dp)
                     .background(
                         color = Color(0xFFFFDDE5),
                         shape = CircleShape
@@ -174,7 +176,7 @@ val remainingFee = totalFee - paidFee
             ) {
                 Text(
                     text = "💗",
-                    fontSize = 25.sp
+                    fontSize = 22.sp
                 )
             }
         }
