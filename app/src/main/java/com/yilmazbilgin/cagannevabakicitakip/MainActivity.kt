@@ -87,12 +87,23 @@ fun BakiciTakipApp(context: Context) {
     var savedDays by remember {
         mutableStateOf(loadSavedDays(context))
     }
+        var paidDays by remember {
+        mutableStateOf(loadPaidDays(context))
+        }
 
     val monthKey = selectedMonth.toString()
 
     val selectedDays = savedDays[monthKey] ?: emptySet()
 
     val totalFee = selectedDays.size * DAILY_FEE
+
+val paidDayCount = selectedDays.count { day ->
+    paidDays[monthKey]?.contains(day) == true
+}
+
+val paidFee = paidDayCount * DAILY_FEE
+
+val remainingFee = totalFee - paidFee
 
     val monthName = selectedMonth.month
         .getDisplayName(TextStyle.FULL, Locale("tr", "TR"))
@@ -254,6 +265,27 @@ fun BakiciTakipApp(context: Context) {
                 background = Color(0xFFFFE8D8)
             )
         }
+            Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(10.dp)
+    ) {
+
+        SummaryCard(
+            modifier = Modifier.weight(1f),
+            emoji = "✅",
+            title = "Ödenen",
+            value = "${formatMoney(paidFee)} TL",
+            background = Color(0xFFE2F5E9)
+        )
+
+        SummaryCard(
+            modifier = Modifier.weight(1f),
+            emoji = "⏳",
+            title = "Kalan",
+            value = "${formatMoney(remainingFee)} TL",
+            background = Color(0xFFFFF0D9)
+        )
+            }
 
         Spacer(modifier = Modifier.height(15.dp))
 
@@ -319,33 +351,61 @@ fun BakiciTakipApp(context: Context) {
                         } else {
 
                             val isSelected = selectedDays.contains(day)
+val isPaid = paidDays[monthKey]?.contains(day) == true
                             val isToday =
                                 selectedMonth == YearMonth.from(today) &&
                                 day == today.dayOfMonth
 
                             CalendarDay(
-                                day = day,
-                                selected = isSelected,
-                                today = isToday,
-                                onClick = {
+    day = day,
+    selected = isSelected,
+    paid = isPaid,
+    today = isToday,
+    onClick = {
 
-                                    val currentDays =
-                                        (savedDays[monthKey] ?: emptySet()).toMutableSet()
+    val currentDays =
+        (savedDays[monthKey] ?: emptySet()).toMutableSet()
 
-                                    if (currentDays.contains(day)) {
-                                        currentDays.remove(day)
-                                    } else {
-                                        currentDays.add(day)
-                                    }
+    val currentPaidDays =
+        (paidDays[monthKey] ?: emptySet()).toMutableSet()
 
-                                    savedDays =
-                                        savedDays.toMutableMap().apply {
-                                            this[monthKey] = currentDays
-                                        }
+    if (!currentDays.contains(day)) {
 
-                                    saveDays(
-                                        context = context,
-                                        data = savedDays
+        // 1. dokunuş: Bakıcı günü
+        currentDays.add(day)
+
+    } else if (!currentPaidDays.contains(day)) {
+
+        // 2. dokunuş: Ödendi
+        currentPaidDays.add(day)
+
+    } else {
+
+        // 3. dokunuş: Günü tamamen kaldır
+        currentDays.remove(day)
+        currentPaidDays.remove(day)
+    }
+
+    savedDays =
+        savedDays.toMutableMap().apply {
+            this[monthKey] = currentDays
+        }
+
+    paidDays =
+        paidDays.toMutableMap().apply {
+            this[monthKey] = currentPaidDays
+        }
+
+    saveDays(
+        context = context,
+        data = savedDays
+    )
+
+    savePaidDays(
+        context = context,
+        data = paidDays
+    )
+    }
                                     )
                                 }
                             )
@@ -483,18 +543,20 @@ fun SummaryCard(
 @androidx.compose.runtime.Composable
 fun CalendarDay(
     day: Int,
-    selected: Boolean,
-    today: Boolean,
-    onClick: () -> Unit
+selected: Boolean,
+paid: Boolean,
+today: Boolean,
+onClick: () -> Unit
 ) {
 
     val backgroundColor =
-        if (selected) {
-            Color(0xFFFFD3DE)
-        } else {
-            Color(0xFFFFFBFA)
-        }
-
+    if (paid) {
+        Color(0xFFD8F3DC)
+    } else if (selected) {
+        Color(0xFFFFD3DE)
+    } else {
+        Color(0xFFFFFBFA)
+    }
     val textColor =
         if (selected) {
             Color(0xFF8C4660)
