@@ -339,7 +339,7 @@ val remainingFee = totalFee - paidFee
                     columns = GridCells.Fixed(7),
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(315.dp),
+                        .height(250.dp),
                     horizontalArrangement = Arrangement.spacedBy(6.dp),
                     verticalArrangement = Arrangement.spacedBy(7.dp)
                 ) {
